@@ -7,4 +7,10 @@ Please decompress '/bubble/input.zip', '/kaggle_unet_bubble/input.zip' and '/kag
 '/bubble/main.py': main function of the U-Net image reconstruction implementation\
 '/bubble/data_main.py': main function of the brain data generation (data is generated already - '/bubble/input')\
 '/bubble/arrayUtils.py': sub-functions of the brain data generation\
-'/bubble/unet.py': unet structure\
+'/bubble/unet.py': unet structure
+
+'/kaggle_unet_bubble/unet': implementation for our project\
+'/kaggle_unet_bubble/unet2': implementation for that image segmentation project\
+(this 2 files are basically the same (except for the data path), for comparison purpose)
+
+all files ending in '.h5' is the trained model
