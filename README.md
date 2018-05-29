@@ -13,4 +13,4 @@ Please decompress '/bubble/input.zip', '/kaggle_unet_bubble/input.zip' and '/kag
 '/kaggle_unet_bubble/unet2': implementation for that image segmentation project\
 (this 2 files are basically the same (except for the data path), for comparison purpose)
 
-all files ending in '.h5' is the trained model
+all files ending in '.h5' are the trained model
