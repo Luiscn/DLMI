@@ -166,6 +166,7 @@ for i in range(len(preds_test)):
                                        mode='constant', preserve_range=True))
 
 # Perform a sanity check on some random training samples
+ix = 0
 plt.imshow(X_train[ix,:,:,:]) # original image
 plt.show()
 plt.imshow(Y_train[ix,:,:,0]) # groud truth
