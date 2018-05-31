@@ -20,6 +20,9 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 import tensorflow as tf
 
+from keras.optimizers import Adam
+from keras.optimizers import SGD
+
 from unet import *
 # from IoU import *
 # Set some parameters
@@ -79,13 +82,14 @@ print('Done!')
 
 # Build U-Net model
 model=unet(IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
-
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+# Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(optimizer='sgd', loss='binary_crossentropy', metrics=['accuracy'])
 # model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 model.summary()
 
 # Fit model
-earlystopper = EarlyStopping(patience=5, verbose=1)
+earlystopper = EarlyStopping(patience=2, verbose=1)
 checkpointer = ModelCheckpoint('bubble_model.h5', verbose=1, save_best_only=True)
 results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=8, epochs=30,
                      callbacks=[earlystopper, checkpointer])
