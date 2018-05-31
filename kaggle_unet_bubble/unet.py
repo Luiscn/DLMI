@@ -22,6 +22,8 @@ from keras.layers.pooling import MaxPooling2D
 from keras.layers.merge import concatenate
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras import backend as K
+from keras.optimizers import Adam
+from keras.optimizers import SGD
 
 import tensorflow as tf
 
@@ -138,7 +140,9 @@ c9 = Conv2D(8, (3, 3), activation='relu', padding='same') (c9)
 outputs = Conv2D(1, (1, 1), activation='sigmoid') (c9)
 
 model = Model(inputs=[inputs], outputs=[outputs])
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[mean_iou])
+Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(optimizer='sgd', loss='binary_crossentropy', metrics=[mean_iou])
 model.summary()
 
 # Fit model
