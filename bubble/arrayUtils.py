@@ -103,7 +103,7 @@ def singleLocationDAS(data,fSamp,estDelaysMs,avgWinMs):
 
     # sum over elements
     t1=np.sum(windowDAS,axis=0)
-    dasOutput = np.dot(t1,t1)
+    dasOutput = np.dot(t1,t1) # amp square 
     
     return dasOutput, windowDAS
 
@@ -121,9 +121,7 @@ def formDASimage(data,xgrid_mm,zgrid_mm,fSamp,avgWin_ms,xArray_mm,zArray_mm):
             zs = zgrid_mm[iz]
             delay_ms = getTimeDelays(xs,zs,xArray_mm,zArray_mm)
             dasP,jnk = singleLocationDAS(data,fSamp,delay_ms,avgWin_ms)
-            dasImage[ix,iz] = dasP
-   
-    
+            dasImage[ix,iz] = dasP  
     return dasImage
 
 def normalizeImage(imageMatrix):
@@ -139,6 +137,7 @@ def imlinmap(im, limIn, limOut):
     im=im-limIn[0]
     im=im*ratio
     im=im+limOut[0]
+    im=np.clip(im, limOut[0], limOut[1])
     return im
 
     
