@@ -20,7 +20,8 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 import tensorflow as tf
 
-from unet import *
+#from unet import *
+from unet_lin import *
 #from unet_7layers import *
 #from unet_5layers import *
 
@@ -95,19 +96,18 @@ print('Done!')
 # Build U-Net model
 model=unet(IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
 
-Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-sgd = SGD(lr=0.05, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer='sgd', loss='mean_squared_error', metrics=['accuracy'])
 model.summary()
 
 # Fit model
-#earlystopper = EarlyStopping(patience=2, verbose=1)
-#checkpointer = ModelCheckpoint('model_9.h5', verbose=1, save_best_only=True)
-#results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=8, epochs=30,
+#earlystopper = EarlyStopping(patience=5, verbose=1)
+#checkpointer = ModelCheckpoint('./model/model_14.h5', verbose=1, save_best_only=True)
+#results = model.fit(X_train, Y_train, validation_split=0.1, batch_size=8, epochs=200,
 #                     callbacks=[earlystopper, checkpointer])
 
 # Predict on train, val and test
-model = load_model('model_9.h5')
+model = load_model('./model/model_14.h5')
 preds_train = model.predict(X_train[:int(X_train.shape[0]*0.9)], verbose=1)
 # preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
 preds_test = model.predict(X_test, verbose=1)
@@ -119,6 +119,7 @@ skimage.io.show()
 plt.imshow(Y_train[ix,:,:,0]) # ground truth of the ix-th sample
 plt.show()
 preds_train_test = preds_train[ix,:,:,0] # scores of the ix-th sample's prediction
+preds_train_test=imlinmap(preds_train_test,[np.min(preds_train_test), np.max(preds_train_test)], [0,1])
 skimage.io.imshow(preds_train_test)
 skimage.io.show()
 
@@ -136,11 +137,11 @@ score = imlinmap(score, [-40, 0], [0, 1]).astype(np.float32)
 skimage.io.imshow(score)
 skimage.io.show()
 
-skimage.io.imsave('tr9-1.png',X_train[ix])
-skimage.io.imsave('tr9-2.png',Y_train[ix,:,:,0])
-skimage.io.imsave('tr9-3.png',preds_train_test)
-skimage.io.imsave('tr9-4-40.png',X_train_test)
-skimage.io.imsave('tr9-5-40.png',score)
+skimage.io.imsave('./result/tr14-in_lin.png',X_train[ix])
+skimage.io.imsave('./result/tr14-gndTruth.png',Y_train[ix,:,:,0])
+skimage.io.imsave('./result/tr14-out_lin.png',preds_train_test)
+skimage.io.imsave('./result/tr14-in_log(-40to0dB).png',X_train_test)
+skimage.io.imsave('./result/tr14-out_log(-40to0dB).png',score)
 
 # # Perform a sanity check on some random testing samples
 ix = 14
@@ -149,6 +150,7 @@ skimage.io.show()
 skimage.io.imshow(Y_test[ix,:,:,0]) # ground truth of the ix-th sample
 skimage.io.show()
 preds_test_test = preds_test[ix,:,:,0] # scores of the ix-th sample's prediction
+preds_test_test=imlinmap(preds_test_test,[np.min(preds_test_test), np.max(preds_test_test)], [0,1])
 skimage.io.imshow(preds_test_test)
 skimage.io.show()
 
@@ -166,8 +168,8 @@ score = imlinmap(score, [-40, 0], [0, 1]).astype(np.float32)
 skimage.io.imshow(score)
 skimage.io.show()
 
-skimage.io.imsave('te9-1.png',X_test[ix])
-skimage.io.imsave('te9-2.png',Y_test[ix,:,:,0])
-skimage.io.imsave('te9-3.png',preds_test_test)
-skimage.io.imsave('te9-4-40.png',X_test_test)
-skimage.io.imsave('te9-5-40.png',score)
+skimage.io.imsave('./result/te14-in_lin.png',X_test[ix])
+skimage.io.imsave('./result/te14-gndTruth.png',Y_test[ix,:,:,0])
+skimage.io.imsave('./result/te14-out_lin.png',preds_test_test)
+skimage.io.imsave('./result/te14-in_log(-40to0dB).png',X_test_test)
+skimage.io.imsave('./result/te14-out_log(-40to0dB).png',score)
