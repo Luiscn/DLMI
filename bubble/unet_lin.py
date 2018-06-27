@@ -4,14 +4,11 @@ from keras.layers.core import Lambda
 from keras.layers.convolutional import Conv2D, Conv2DTranspose
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.merge import concatenate
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras import backend as K
 
 # Build U-Net model
 def unet(IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS):
 	inputs = Input((IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS))
 	s = Lambda(lambda x: x / 255) (inputs)
-	# s = Lambda(lambda x: x )(inputs)
 
 	c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (s)
 	c1 = Conv2D(8, (3, 3), activation='relu', padding='same') (c1)
