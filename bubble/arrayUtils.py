@@ -132,6 +132,127 @@ def normalizeImage(imageMatrix):
     
     return(img)
     
+def bCloud(center, cloudRange, numBubble, xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    data_sp = 0
+    ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
+    for bub in range(numBubble):
+        xs_mm = center[0] + cloudRange * (np.random.rand(1)-0.5) # source x between -5 to 5
+        zs_mm = center[1] + cloudRange * (np.random.rand(1)-0.5) # source z between 2 to 12
+        ampSrc = 1.0 + 1. * np.random.rand(1)
+    
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)    
+        data = ampSrc * addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = ampSrc
+     
+#    ptSrc = ptSrc / np.max(ptSrc)
+    
+    return data_sp, ptSrc
+
+def bLine(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
+    data_sp = 0
+    num1 = 6 + np.random.randint(15) # 10 - 25
+    space1 = 10 / num1
+    spaceInit1 = space1 * np.random.rand(1)+2
+    xs_mm = -4+3* np.random.rand(1) # source x between -5 to 5
+    for bub in range(num1):
+        zs_mm =  spaceInit1 + bub * space1 + 0.2*(np.random.rand(1)-0.5)# source z between 2 to 12
+        ampSrc = 1.0 + 1. * np.random.rand(1)
+    
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)    
+        data = ampSrc * addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = ampSrc
+    
+    num2 = 6 + np.random.randint(15) # 5 - 25
+    space2 = 10 / num2
+    spaceInit2 = space2 * np.random.rand(1)+2
+    xs_mm = 1+3* np.random.rand(1) # source x between -5 to 5
+    for bub in range(num2):
+        zs_mm =  spaceInit2 + bub * space2 +0.2*(np.random.rand(1)-0.5)# source z between 2 to 12
+        ampSrc = 1.0 + 1. * np.random.rand(1)
+    
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)    
+        data = ampSrc * addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = ampSrc
+        
+    num3 = 6 + np.random.randint(15) # 10 - 25
+    space3 = 10 / num3
+    spaceInit3 = space3 * np.random.rand(1) -5
+    zs_mm = 3+3* np.random.rand(1) # source z between 2 to 12
+    for bub in range(num3):
+        xs_mm =  spaceInit3 + bub * space3 +0.2*(np.random.rand(1)-0.5)# source x between -5 to 5
+        ampSrc = 1.0 + 1. * np.random.rand(1)
+    
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)    
+        data = ampSrc * addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = ampSrc
+    
+    num4 = 6 + np.random.randint(15) # 10 - 25
+    space4 = 10 / num4
+    spaceInit4 = space4 * np.random.rand(1)-5
+    zs_mm = 8+3* np.random.rand(1) # source z between 2 to 12
+    for bub in range(num4):
+        xs_mm =  spaceInit4 + bub * space4 +0.2*(np.random.rand(1)-0.5)# source x between -5 to 5
+        ampSrc = 1.0 + 1. * np.random.rand(1)
+    
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)    
+        data = ampSrc * addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = ampSrc
+    
+    return data_sp, ptSrc
+
+def resultCompare(out,truth):
+    import skimage.io
+    idx=truth!=0
+    out=imlinmap(out,[np.min(out),np.max(out)],[0,1])
+    truth=imlinmap(truth,[np.min(truth),np.max(truth)],[0,1])
+    imgR=out.copy()
+#    imgR[idx]=truth[idx]
+    imgR[idx]=1
+    imgGB=out.copy()
+    imgGB[idx]=0
+    show=np.zeros((truth.shape[0],truth.shape[1],3))
+    show[:,:,0]=imgR
+    show[:,:,1]=imgGB
+    show[:,:,2]=imgGB
+    skimage.io.imsave('./result/show.png',show)
+    return show
+
 def imlinmap(im, limIn, limOut):
     ratio=(limOut[1]-limOut[0])/(limIn[1]-limIn[0])
     im=im-limIn[0]
