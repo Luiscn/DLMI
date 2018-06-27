@@ -40,7 +40,7 @@ def simulateOneSource(filePostfix,DOPLOTS=1):
     xgrid_mm = np.linspace(-5,5,128)
     zgrid_mm = np.linspace(2,12,128) 
     
-    numBub = 1 +np.random.randint(10)
+    numBub = 70 +np.random.randint(10)
     data_sp = 0
     ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
     for bub in range(numBub):
@@ -104,11 +104,11 @@ def simulateOneSource(filePostfix,DOPLOTS=1):
     skimage.io.imsave(fname_recon,dl)
     os.chdir('..')
 
-    if not os.path.isdir('true_lin/'):
-        os.mkdir('true_lin/',mode=0o777)
-    os.chdir('true_lin/')
-    skimage.io.imsave(fname_truth,gndTruth_lin)
-    os.chdir('..')
+#    if not os.path.isdir('true_lin/'):
+#        os.mkdir('true_lin/',mode=0o777)
+#    os.chdir('true_lin/')
+#    skimage.io.imsave(fname_truth,gndTruth_lin)
+#    os.chdir('..')
 
     if not os.path.isdir('true_pt/'):
         os.mkdir('true_pt/',mode=0o777)
@@ -125,7 +125,7 @@ def simulateOneSource(filePostfix,DOPLOTS=1):
 #simulateOneSource(2.0,7.3,3,'test',1)
 
 # RUN SIMULATOR TO MAKE A BUNCH OF INPUT/OUTPUT IMAGE PAIRS
-numPix = 5 # CHANGE ME!!
+numPix = 600 # CHANGE ME!!
 
 for runNumber in range(numPix):
 
