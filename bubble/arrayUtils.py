@@ -35,7 +35,7 @@ def getTimeDelays(xSrc_mm,zSrc_mm,xArray_mm,zArray_mm,c=1500):
     
     return(delaysMs)
     
-def gausPuls(fSamp,pulseDurMs,tStartMs=0,fCen=5e6):
+def gausPuls(fSamp,pulseDurMs,tStartMs=0,fCen=0.5e6):
  
     nsamp = np.floor(pulseDurMs/1000*fSamp);
     #print(nsamp)
@@ -132,6 +132,28 @@ def normalizeImage(imageMatrix):
     
     return(img)
     
+def latResPht(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
+    data_sp = 0
+    zs_list = np.linspace(2.5, 11.5, 5)
+    xspacing_mm = 10/128 * np.linspace(1,5,5)
+    for i in range(1):
+        for j in [-1, 1]:
+            xs_mm = j*xspacing_mm[i+1+1+1+1]
+            zs_mm = zs_list[2]
+           
+            # simulate recieved data
+            delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+            signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)
+            data = addNoiseToSignal(signals,SNR_LIN)
+            data_sp = data_sp + data
+            
+            # make a comparison ground truth image
+            xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+            zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+            ptSrc[zBest,xBest] = 1
+        
+    return data_sp, ptSrc
 def bCloud(center, cloudRange, numBubble, xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
     data_sp = 0
     ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
@@ -239,7 +261,7 @@ def bLine(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
 def resultCompare(out,truth):
     import skimage.io
     idx=truth!=0
-    out=imlinmap(out,[np.min(out),np.max(out)],[0,1])
+    out=imlinmap(out,[0,np.max(out)],[0,1])
     truth=imlinmap(truth,[np.min(truth),np.max(truth)],[0,1])
     imgR=out.copy()
 #    imgR[idx]=truth[idx]
