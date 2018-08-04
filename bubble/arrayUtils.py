@@ -66,7 +66,6 @@ def simulateSignal(fSamp,delaysMs,tCaptureMs):
         #print(thisPuls.size)
         signals[ichan,:] = np.interp(tMs,thisTms,thisPuls);
         
-    
     return(signals)
     
 def addNoiseToSignal(signals,snrLin):
@@ -131,8 +130,51 @@ def normalizeImage(imageMatrix):
     #img = 10*np.log10(img)
     
     return(img)
+
+def fnPht(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    # fake node phantoms
+    ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
+    data_sp = 0
+    xs = 8 * (np.random.rand(1) - 0.5)
+    zs = 3 + np.random.rand(1) * 8
+    x_spacing = 10/128 * (3 * np.random.rand(1)+2)
+    z_spacing = 10/128 * (3 * np.random.rand(1)+2)
     
+    for i in [-1, 1]:
+        xs_mm = xs + i * x_spacing
+        zs_mm = zs
+       
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)
+        data = addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = 1
+    
+    for j in [-1, 0, 1]:
+        xs_mm = xs
+        zs_mm = zs + j * z_spacing
+       
+        # simulate recieved data
+        delay_ms = getTimeDelays(xs_mm,zs_mm,xArray_mm,zArray_mm)
+        signals = simulateSignal(FS,delay_ms,TCAPTURE_MS)
+        data = addNoiseToSignal(signals,SNR_LIN)
+        data_sp = data_sp + data
+        
+        # make a comparison ground truth image
+        xBest = np.argmin(np.abs(xgrid_mm-xs_mm))
+        zBest = np.argmin(np.abs(zgrid_mm-zs_mm))
+        ptSrc[zBest,xBest] = 1
+    
+    
+    return data_sp, ptSrc
+
 def latResPht(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    # lateral resolution pht
     ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
     data_sp = 0
     zs_list = np.linspace(2.5, 11.5, 5)
@@ -154,7 +196,9 @@ def latResPht(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
             ptSrc[zBest,xBest] = 1
         
     return data_sp, ptSrc
+
 def bCloud(center, cloudRange, numBubble, xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    # bubble clouds
     data_sp = 0
     ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
     for bub in range(numBubble):
@@ -178,6 +222,7 @@ def bCloud(center, cloudRange, numBubble, xgrid_mm, zgrid_mm, xArray_mm,zArray_m
     return data_sp, ptSrc
 
 def bLine(xgrid_mm, zgrid_mm, xArray_mm,zArray_mm,FS, TCAPTURE_MS, SNR_LIN):
+    # bubble lines
     ptSrc = np.zeros((xgrid_mm.size,zgrid_mm.size))
     data_sp = 0
     num1 = 6 + np.random.randint(15) # 10 - 25
