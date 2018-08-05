@@ -16,6 +16,5 @@ Simulated data: please decompress all ZIPs. (GitHub allows only 100 folders in t
 
 '/bubble/unet_lin.py': unet structures with linear output layer activation function.
 
-model_20: trained from img with less point sources.\
-model_24: trained from img with more point sources.\
+Uses model_29\
 all files ending in '.h5' are the trained model
