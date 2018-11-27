@@ -13,8 +13,8 @@ cos_corr_s = np.zeros(93)
 
 for test_sample in range(93):
     
-    phz_pred = np.mean(phz_in[[int(idx) for idx in ind[test_sample,:]],:,:],axis=0)*2/3 + phz_in[int(ind[test_sample,1]),:,:]/3
-    mag_pred = np.mean(label_mag[:,:,[int(idx) for idx in ind[test_sample,:]]],axis=2)*2/3 + label_mag[:,:,int(ind[test_sample,1])]/3  
+    phz_pred = np.mean(phz_in[[int(idx) for idx in ind[test_sample,:]],:,:],axis=0)*2/3 + phz_in[int(ind[test_sample,0]),:,:]/3
+    mag_pred = np.mean(label_mag[:,:,[int(idx) for idx in ind[test_sample,:]]],axis=2)*2/3 + label_mag[:,:,int(ind[test_sample,0])]/3  
     fieldOrig = label_mag[:,:,test_sample+900]*np.exp(1j*phz_in[test_sample+900,:,:])
     
     fieldPred_noskull = mag_nsk[:,:,458]*np.exp(1j*phz_nsk[:,:,458]) # no-effort preds
@@ -28,8 +28,8 @@ for test_sample in range(93):
 
 for test_sample in range(93):
     
-    phz_pred = np.mean(phz_in[[int(idx) for idx in ind[test_sample,:]],:,:],axis=0)*2/3 + phz_in[int(ind[test_sample,1]),:,:]/3
-    mag_pred = np.mean(label_mag[:,:,[int(idx) for idx in ind[test_sample,:]]],axis=2)*2/3 + label_mag[:,:,int(ind[test_sample,1])]/3  
+    phz_pred = np.mean(phz_in[[int(idx) for idx in ind[test_sample,:]],:,:],axis=0)*2/3 + phz_in[int(ind[test_sample,0]),:,:]/3
+    mag_pred = np.mean(label_mag[:,:,[int(idx) for idx in ind[test_sample,:]]],axis=2)*2/3 + label_mag[:,:,int(ind[test_sample,0])]/3  
     fieldOrig = label_mag[:,:,test_sample+900]*np.exp(1j*phz_in[test_sample+900,:,:])
     
 #    fieldPred = mag_nsk[:,:,459]*np.exp(1j*phz_nsk[:,:,459]) # no-effort preds
