@@ -66,7 +66,7 @@ plt.scatter(skull_diff_std, percError_noskull)
 plt.title('error relation')
 plt.show()
 
-plt.plot(phz_Error %  (2*np.pi))
+plt.plot(phz_Error)
 plt.title('averaged phase diff (< 2 pi)')
 plt.show()
 
