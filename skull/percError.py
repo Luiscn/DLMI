@@ -1,13 +1,5 @@
 from numpy.linalg import norm
 
-#def cos_corr(in1, in2):
-#   a,b = np.zeros((np.shape(in1)[0],np.shape(in1)[1],2)), np.zeros((np.shape(in2)[0],np.shape(in2)[1],2))
-#   a[:,:,0] = np.real(in1)
-#   a[:,:,1] = np.imag(in1)
-#   b[:,:,0] = np.real(in2)
-#   b[:,:,1] = np.imag(in2)
-#   return np.sum(a*b)/(norm(a)*norm(b))
-
 def cos_corr(in1, in2):
     in1 = np.reshape(in1, (1,-1))
     in2 = np.reshape(in2, (-1,1))
